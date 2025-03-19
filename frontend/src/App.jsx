@@ -3,7 +3,24 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+function scheduleMeeting() {
 
+  fetch('http://localhost:3000/', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      topic: "Meeting test technique2",
+    })
+  })
+    .then(response => response.json())
+    .then(console.log)
+    .catch(error => {
+      console.error(error);
+    }
+  )
+}
 
 function App() {
   const [count, setCount] = useState(0)
@@ -20,7 +37,7 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        <button onClick={scheduleMeeting}>
           count is {count}
         </button>
         <p>
