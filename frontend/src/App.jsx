@@ -35,50 +35,49 @@ function App() {
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
+      <h1>Meeting scheduling tool</h1>
       <div className="card">
-        <DayPilotCalendar
-          viewType={"Week"}
-          startDate={new Date().setDate(new Date().getDate() + 7)} // next week
-          controlRef={setCalendar}
-          onEventMove={(args) => {
-            setEvent({
-              start: args.newStart.value,
-              end: args.newEnd.value,
-            });
-          }}
-          onEventResize={(args) => {
-            setEvent({
-              start: args.newStart.value,
-              end: args.newEnd.value,
-            });
-          }}
-          onTimeRangeSelect={(args) => {
-            setEvent({
-              start: args.start.value,
-              end: args.end.value,
-            });
-            if (calendar.events.find("zoomid")) {
-              calendar.events.remove("zoomid");
-            }
-            calendar.events.add({
-              start: args.start,
-              end: args.end,
-              id: "zoomid",
-              text: "Meeting",
-            });
-          }}
-        />
+        {!isScheduled && (
+          <>
+            <p>Select a time range to schedule a meeting</p>
+            <DayPilotCalendar
+              viewType={"Week"}
+              startDate={new Date().setDate(new Date().getDate() + 7)} // next week
+              controlRef={setCalendar}
+              onEventMove={(args) => {
+                setEvent({
+                  start: args.newStart.value,
+                  end: args.newEnd.value,
+                });
+              }}
+              onEventResize={(args) => {
+                setEvent({
+                  start: args.newStart.value,
+                  end: args.newEnd.value,
+                });
+              }}
+              onTimeRangeSelect={(args) => {
+                setEvent({
+                  start: args.start.value,
+                  end: args.end.value,
+                });
+                if (calendar.events.find("zoomid")) {
+                  calendar.events.remove("zoomid");
+                }
+                calendar.events.add({
+                  start: args.start,
+                  end: args.end,
+                  id: "zoomid",
+                  text: "Meeting",
+                });
+              }}
+            />
+          </>
+        )}
+
         {event.start && !isScheduled && (
           <>
+            <label>Topic:</label>
             <input
               type="text"
               value={topic}
@@ -87,17 +86,16 @@ function App() {
                 calendar.events.find("zoomid").text = e.target.value;
               }}
             />
+            <br />
+            Start date: {event.start.toLocaleString()}
+            <br />
+            End date: {event.end.toLocaleString()}
+            <br />
             <button onClick={scheduleMeeting}>Schedule that meeting!</button>
           </>
         )}
         {isScheduled && <p>Meeting scheduled!</p>}
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   );
 }
