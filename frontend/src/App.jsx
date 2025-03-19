@@ -4,27 +4,34 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import { DayPilotCalendar } from "@daypilot/daypilot-lite-react";
 
-function scheduleMeeting() {
-  fetch("http://localhost:3000/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      topic: "Meeting test technique2",
-    }),
-  })
-    .then((response) => response.json())
-    .then(console.log)
-    .catch((error) => {
-      console.error(error);
-    });
-}
-
 function App() {
   const [event, setEvent] = useState({ start: null, end: null });
+  const [topic, setTopic] = useState("Zoom meeting");
+
+  const [isScheduled, setIsScheduled] = useState(false);
 
   const [calendar, setCalendar] = useState();
+
+  function scheduleMeeting() {
+    fetch("http://localhost:3000/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        topic,
+        start: event.start,
+        end: event.end,
+      }),
+    })
+      .then((response) => {
+        setIsScheduled(true);
+      })
+
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
   return (
     <>
@@ -58,17 +65,31 @@ function App() {
               start: args.start.value,
               end: args.end.value,
             });
+            if (calendar.events.find("zoomid")) {
+              calendar.events.remove("zoomid");
+            }
             calendar.events.add({
               start: args.start,
               end: args.end,
               id: "zoomid",
-              text: "Zoom meeting",
+              text: "Meeting",
             });
-
-            calendar.clearSelection();
           }}
         />
-        <button onClick={scheduleMeeting}>count is {event.start}</button>
+        {event.start && !isScheduled && (
+          <>
+            <input
+              type="text"
+              value={topic}
+              onChange={(e) => {
+                setTopic(e.target.value);
+                calendar.events.find("zoomid").text = e.target.value;
+              }}
+            />
+            <button onClick={scheduleMeeting}>Schedule that meeting!</button>
+          </>
+        )}
+        {isScheduled && <p>Meeting scheduled!</p>}
         <p>
           Edit <code>src/App.jsx</code> and save to test HMR
         </p>

@@ -47,8 +47,8 @@ app.post("/", async (req, res) => {
       {
         topic: req.body.topic,
         type: 2,
-        start_time: "2025-09-20T11:00:00",
-        duration: 60,
+        start_time: req.body.start,
+        duration: (new Date(req.body.end) - new Date(req.body.start)) / 60000,
         timezone: "Europe/Paris",
       },
       {
