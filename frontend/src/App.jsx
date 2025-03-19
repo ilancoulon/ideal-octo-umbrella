@@ -47,6 +47,7 @@ function App() {
       <div className="card">
         <DayPilotCalendar
           viewType={"Week"}
+          startDate={new Date().setDate(new Date().getDate() + 7)} // next week
           controlRef={setCalendar}
           onEventMove={(args) => {
             setEvent({
