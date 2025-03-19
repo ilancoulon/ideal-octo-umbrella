@@ -1,29 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+import { DayPilotCalendar } from "@daypilot/daypilot-lite-react";
 
 function scheduleMeeting() {
-
-  fetch('http://localhost:3000/', {
-    method: 'POST',
+  fetch("http://localhost:3000/", {
+    method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       topic: "Meeting test technique2",
-    })
+    }),
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(console.log)
-    .catch(error => {
+    .catch((error) => {
       console.error(error);
-    }
-  )
+    });
 }
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [event, setEvent] = useState({ start: null, end: null });
+
+  const [calendar, setCalendar] = useState();
 
   return (
     <>
@@ -37,9 +38,37 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={scheduleMeeting}>
-          count is {count}
-        </button>
+        <DayPilotCalendar
+          viewType={"Week"}
+          controlRef={setCalendar}
+          onEventMove={(args) => {
+            setEvent({
+              start: args.newStart.value,
+              end: args.newEnd.value,
+            });
+          }}
+          onEventResize={(args) => {
+            setEvent({
+              start: args.newStart.value,
+              end: args.newEnd.value,
+            });
+          }}
+          onTimeRangeSelect={(args) => {
+            setEvent({
+              start: args.start.value,
+              end: args.end.value,
+            });
+            calendar.events.add({
+              start: args.start,
+              end: args.end,
+              id: "zoomid",
+              text: "Zoom meeting",
+            });
+
+            calendar.clearSelection();
+          }}
+        />
+        <button onClick={scheduleMeeting}>count is {event.start}</button>
         <p>
           Edit <code>src/App.jsx</code> and save to test HMR
         </p>
@@ -48,7 +77,7 @@ function App() {
         Click on the Vite and React logos to learn more
       </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
