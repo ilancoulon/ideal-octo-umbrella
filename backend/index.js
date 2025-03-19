@@ -26,8 +26,7 @@ async function getZoomToken() {
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          Authorization:
-            "Basic SER2U2pUVnFTWWVRR1RmOURtUUllZzpOTDFBTHdXMUtSdEFtY1p2TWNnMmdBVUcxQndmTGFJQw==",
+          Authorization: "Basic SECRET_BASE64_ENCODED_CREDENTIALS", // Replace with your own
         },
       }
     );
